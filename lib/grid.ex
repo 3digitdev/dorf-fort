@@ -4,6 +4,47 @@ defmodule Grid do
 
   Represented as a Map{row_num => Map{col_num => GridNode}}
   """
+
+  defmodule Coords do
+    @moduledoc """
+    A Coordinate representation for objects
+    Helpful for referencing to the GridNode the object exists on at the time
+
+    NOTE:  This is not used **inside** the GridNode, but it can be used
+    to get a GridNode from the Grid
+    """
+    defstruct [:x, :y]
+
+    defimpl String.Chars, for: Coords do
+      def to_string(coords), do: "(#{coords.x}, #{coords.y})"
+    end
+
+    def move_between(%Coords{x: x1, y: y1}, %Coords{x: x2, y: y2}) do
+      xd =
+        case x1 - x2 do
+          r when r < 0 -> x1 + 1
+          r when r == 0 -> x1
+          r when r > 0 -> x1 - 1
+        end
+
+      yd =
+        case y1 - y2 do
+          r when r < 0 -> y1 + 1
+          r when r == 0 -> y1
+          r when r > 0 -> y1 - 1
+        end
+
+      %Coords{x: xd, y: yd}
+    end
+  end
+
+  @doc """
+  Get the current GridNode at a specified Coordinate set.  Useful when used from
+  objects/dwarves that you need the current spot they are in
+  """
+  @spec get_node(Grid, Coords) :: GridNode
+  def get_node(grid, coords), do: grid[coords.x][coords.y]
+
   defmodule GridNode do
     @moduledoc """
     A single node inside the game's Grid
