@@ -8,7 +8,7 @@ defmodule AStar do
     defstruct [:from_start, :thru_node]
   end
 
-  @type priority_q   :: list(GridNode)
+  @type priority_q  :: list(GridNode)
   @type score_map   :: %{GridNode => Scores}
   @type parent_map  :: %{GridNode => GridNode}
 
@@ -22,9 +22,9 @@ defmodule AStar do
   @spec find_path(Grid, GridNode, GridNode) :: [GridNode]
   def find_path(grid, start, goal) do
     pqueue = PQueue.new() |> PQueue.push(start)
-    score_map = Map.new() 
+    score_map = Map.new()
       |> Map.put(start, %Scores{from_start: 0, thru_node: Grid.beeline_distance(start, goal)})
-    loop(grid, goal, MapSet.new(), {pqueue, Map.new(), score_map})  # TODO:  add "closed_set" and "from" as params
+    loop(grid, goal, MapSet.new(), {pqueue, Map.new(), score_map})
   end
 
   @doc """
@@ -50,9 +50,9 @@ defmodule AStar do
         # For each neighbor of the current node...
         grid |> Grid.neighbors_of(current),
         # Starting with the base values...
-        {pqueue, prev_node_map, node_scores}, 
+        {pqueue, prev_node_map, node_scores},
         # Process the current neighbor.
-        fn neighbor, {_pqueue, _prev_node_map, node_scores}=trackers ->
+        fn neighbor, {_pqueue, _prev_node_map, node_scores} = trackers ->
           cond do
             # Already visited this node
             visited_nodes |> MapSet.member?(neighbor) -> trackers
@@ -66,19 +66,19 @@ defmodule AStar do
                 :nil ->
                   # Neighbor node hasn't been scored yet, let's give it one
                   update_trackers(
-                    trackers, 
-                    current, 
-                    neighbor, 
-                    goal, 
+                    trackers,
+                    current,
+                    neighbor,
+                    goal,
                     score_from_start
                   )
                 %{from_start: neighbor_score} when score_from_start < neighbor_score ->
                   # Neighbor has been scored at some point, and the new score is better
                   update_trackers(
-                    trackers, 
-                    current, 
-                    neighbor, 
-                    goal, 
+                    trackers,
+                    current,
+                    neighbor,
+                    goal,
                     score_from_start
                   )
                 %{from_start: _} ->
@@ -98,18 +98,20 @@ defmodule AStar do
 
   Returns all the updated trackers
   """
-  @spec update_trackers({priority_q, parent_map, score_map}, GridNode, GridNode, GridNode, float) :: {priority_q, parent_map, score_map}
+  @spec update_trackers(
+    {priority_q, parent_map, score_map}, GridNode, GridNode, GridNode, float
+  ) :: {priority_q, parent_map, score_map}
   def update_trackers({pqueue, prev_node_map, node_scores}, current, neighbor, goal, score_from_start) do
     {
       # Add neighbor to queue
-      pqueue |> PQueue.push(neighbor), 
+      pqueue |> PQueue.push(neighbor),
       # Add neighbor to traversal map
       prev_node_map |> Map.put(neighbor, current),
       # Update neighbor scores
       node_scores |> Map.put(
-        neighbor, 
+        neighbor,
         %Scores{
-          from_start: score_from_start, 
+          from_start: score_from_start,
           thru_node: Grid.beeline_distance(neighbor, goal) + score_from_start
         }
       )

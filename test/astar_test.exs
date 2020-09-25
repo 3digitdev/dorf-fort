@@ -44,7 +44,11 @@ defmodule AStarTest do
     goal =     %GridNode{x: 10, y: 10, weight: 10}
     assert AStar.update_trackers(
       {PQueue.new(), %{}, %{}}, current, neighbor, goal, 18
-    ) == {[neighbor], %{neighbor => current}, %{neighbor => %AStar.Scores{from_start: 18, thru_node: 24.40312423743285}}}
+    ) == {
+      [neighbor],
+      %{neighbor => current},
+      %{neighbor => %AStar.Scores{from_start: 18, thru_node: 24.40312423743285}}
+    }
   end
 
   test "update trackers existing data" do
@@ -54,9 +58,9 @@ defmodule AStarTest do
     goal     = %GridNode{x: 10, y: 10, weight: 10}
     assert AStar.update_trackers(
       {[current], %{current => old}, %{current => %AStar.Scores{from_start: 17, thru_node: 23.2536475}}},
-      current, 
-      neighbor, 
-      goal, 
+      current,
+      neighbor,
+      goal,
       18
     ) == {
       [current, neighbor],
@@ -84,7 +88,7 @@ defmodule AStarTest do
     grid  = Grid.new(2, 2)
     goal  = grid[1][1]
     start = grid[0][0]
-    assert AStar.find_path(grid, start, goal) == [grid[0][1], goal]
+    assert AStar.find_path(grid, start, goal) == [grid[1][0], goal]
   end
 
   @doc """

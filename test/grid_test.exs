@@ -126,9 +126,9 @@ defmodule GridTest do
 
     assert grid |> Grid.neighbors_of(grid[1][1]) == [
       %GridNode{x: 0, y: 1, weight: 0},
+      %GridNode{x: 2, y: 1, weight: 0},
       %GridNode{x: 1, y: 0, weight: 0},
-      %GridNode{x: 1, y: 2, weight: 0},
-      %GridNode{x: 2, y: 1, weight: 0}
+      %GridNode{x: 1, y: 2, weight: 0}
     ]
   end
 
@@ -139,8 +139,8 @@ defmodule GridTest do
     grid = Grid.new(3, 3)
 
     assert grid |> Grid.neighbors_of(grid[0][0]) == [
-      %GridNode{x: 0, y: 1, weight: 0},
-      %GridNode{x: 1, y: 0, weight: 0}
+      %GridNode{x: 1, y: 0, weight: 0},
+      %GridNode{x: 0, y: 1, weight: 0}
     ]
   end
 
@@ -151,9 +151,9 @@ defmodule GridTest do
     grid = Grid.new(3, 3)
 
     assert grid |> Grid.neighbors_of(grid[0][1]) == [
+      %GridNode{x: 1, y: 1, weight: 0},
       %GridNode{x: 0, y: 0, weight: 0},
-      %GridNode{x: 0, y: 2, weight: 0},
-      %GridNode{x: 1, y: 1, weight: 0}
+      %GridNode{x: 0, y: 2, weight: 0}
     ]
   end
 

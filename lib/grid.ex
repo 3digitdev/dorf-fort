@@ -74,13 +74,10 @@ defmodule Grid do
         %{}
       _ ->
         Enum.reduce(0..(height - 1), %{}, fn x, grid ->
-          Map.put(
-            grid,
-            x,
-            Enum.reduce(0..(width - 1), %{}, fn y, row ->
-              Map.put(row, y, %GridNode{x: x, y: y})
-            end)
-          )
+          # credo:disable-for-next-line
+          Map.put(grid, x, Enum.reduce(0..(width - 1), %{}, fn y, row ->
+            Map.put(row, y, %GridNode{x: x, y: y})
+          end))
         end)
     end
   end
@@ -152,28 +149,12 @@ defmodule Grid do
   """
   @spec neighbors_of(Grid, GridNode) :: list(GridNode)
   def neighbors_of(grid, %GridNode{x: x, y: y}) do
-    [-1, 0, 1]
-      |> Enum.map(fn x_mod ->
-        [-1, 0, 1]
-          |> Enum.map(fn y_mod ->
-            cond do
-              x_mod != 0 and y_mod != 0 ->
-                # Corners
-                nil
-              x_mod == 0 and y_mod == 0 ->
-                # Current Node
-                nil
-              true ->
-                # Actual neighbors
-                case grid[x + x_mod] do
-                  nil -> nil
-                  row -> row[y + y_mod]
-                end
-            end
-          end)
-      end)
-        |> List.flatten()
-        |> Enum.filter(&(!is_nil(&1)))
+    [
+      grid[x - 1][y] || :nil,  # top
+      grid[x + 1][y] || :nil,  # bottom
+      grid[x][y - 1] || :nil,  # left
+      grid[x][y + 1] || :nil   # right
+    ] |> Enum.filter(&(!is_nil(&1)))
   end
 
   @doc """
@@ -185,7 +166,7 @@ defmodule Grid do
   Realistically, this should only ever be called on adjacent nodes, however this assumption is not tested
   """
   @spec travel_weight(GridNode, GridNode) :: float
-  def travel_weight(start, finish), do: (start.weight + finish.weight) / 2 
+  def travel_weight(start, finish), do: (start.weight + finish.weight) / 2
 
   @doc """
   Heuristic function for finding the approximate distance between 2 nodes in a Grid

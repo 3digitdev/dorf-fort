@@ -1,6 +1,6 @@
 defmodule Dorf do
   use EnumType
-  use Grid.Coords, as: Coords
+  alias Grid.Coords, as: Coords
 
   defmodule Dwarf do
     @moduledoc """
@@ -23,7 +23,6 @@ defmodule Dorf do
       end
     end
 
-    
     def start_walking(dwarf, coords), do: %{dwarf | destination: coords, state: State.Walking}
 
     def update(dwarf) do
